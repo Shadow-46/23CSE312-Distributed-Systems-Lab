@@ -102,7 +102,17 @@ public class DSMNode {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         System.out.println("================================================================");
 
-        SharedMemory mem = new SharedMemory(ip, port);
+        SharedMemory mem;
+        try {
+            mem = new SharedMemory(ip, port);
+        } catch (IOException e) {
+            System.out.println("\n[" + now() + "] Could not reach the memory manager at " + ip + ":" + port
+                    + " (" + e.getMessage() + ").");
+            System.out.println("  * Use the exact 'Local IP' printed in the DSMServer banner.");
+            System.out.println("  * Make sure DSMServer is running and both machines are on the same network.");
+            System.out.println("  * Allow TCP port 7000 through the firewall on the server machine.");
+            return;
+        }
         System.out.println("[" + now() + "] Attached to shared memory at " + ip + ":" + port);
 
         Scanner sc = new Scanner(System.in);

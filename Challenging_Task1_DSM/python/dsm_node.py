@@ -93,7 +93,14 @@ def main():
     print(f" Started  : {datetime.datetime.now():%Y-%m-%d %H:%M:%S}")
     print("=" * 64)
 
-    mem = SharedMemory(ip, port)
+    try:
+        mem = SharedMemory(ip, port)
+    except OSError as e:
+        print(f"\n[{now()}] Could not reach the memory manager at {ip}:{port} ({e}).")
+        print("  * Use the exact 'Local IP' printed in the dsm_server banner.")
+        print("  * Make sure dsm_server is running and both machines are on the same network.")
+        print("  * Allow TCP port 7000 through the firewall on the server machine.")
+        sys.exit(1)
     print(f"[{now()}] Attached to shared memory at {ip}:{port}")
 
     menu = ("\n1. Create shared variable\n2. Read shared variable\n"

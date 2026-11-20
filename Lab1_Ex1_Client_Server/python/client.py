@@ -70,7 +70,15 @@ def main():
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print(f"[{now()}] Connecting to server {server_ip}:{port} ...")
-    sock.connect((server_ip, port))
+    sock.settimeout(10)
+    try:
+        sock.connect((server_ip, port))
+    except OSError as e:
+        print(f"[{now()}] Could not reach the server at {server_ip}:{port} ({e}).")
+        print("  * Use the exact 'Local IP' printed in the server banner.")
+        print("  * Make sure the server is running and port 5000 is allowed through its firewall.")
+        sys.exit(1)
+    sock.settimeout(None)
     local = sock.getsockname()
     peer_label = f"Server ({server_ip}:{port})"
     print(f"[{now()}] Connected! (this client is {local[0]}:{local[1]})")

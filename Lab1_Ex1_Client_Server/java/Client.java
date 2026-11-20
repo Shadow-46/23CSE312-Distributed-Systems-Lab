@@ -54,7 +54,16 @@ public class Client {
         banner("CLIENT", port);
 
         System.out.println("[" + now() + "] Connecting to server " + serverIp + ":" + port + " ...");
-        Socket sock = new Socket(serverIp, port);
+        Socket sock = new Socket();
+        try {
+            sock.connect(new InetSocketAddress(serverIp, port), 10000);
+        } catch (IOException e) {
+            System.out.println("[" + now() + "] Could not reach the server at " + serverIp + ":" + port
+                    + " (" + e.getMessage() + ").");
+            System.out.println("  * Use the exact 'Local IP' printed in the server banner.");
+            System.out.println("  * Make sure the server is running and port 5000 is allowed through its firewall.");
+            return;
+        }
         String peer = "Server (" + serverIp + ":" + port + ")";
         System.out.println("[" + now() + "] Connected! (this client is "
                 + sock.getLocalAddress().getHostAddress() + ":" + sock.getLocalPort() + ")");
